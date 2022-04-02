@@ -34,7 +34,7 @@ class Line {
   }
 }
 
-class Rectangle {
+class Rect {
   constructor(x,y,w,h) {
     this.leftTop = new Point(x,y)
     this.rightTop = new Point(x+w,y)
@@ -56,30 +56,52 @@ class Rectangle {
   }
 }
 
+class Quad {
+  constructor(l1,l2,l3,l4) {
+    this.l1 = l1
+    this.l2 = l2
+    this.l3 = l3
+    this.l4 = l4
+  }
+
+  draw() {
+    this.l1.draw()
+    this.l2.draw()
+    this.l3.draw()
+    this.l4.draw()
+  }
+}
+
 function crossLine(l1,r1,l2,r2) {
   const pointOnL1 = l1.interpolate(r1)
   const pointOnL2 = l2.interpolate(r2)
   return new Line(pointOnL1,pointOnL2)
 }
 
-function generateGrid(rect,xFreq,yFreq) {
-  const lines = rect.lines
+function generateRectGrid(rect,xFreq,yFreq) {
+  const quadedRect = new Quad(
+    rect.lines.left,
+    rect.lines.top,
+    rect.lines.right,
+    rect.lines.bottom
+  );
+  return generateQuadGrid(quadedRect,xFreq,yFreq)
+}
 
+function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
   let result = []
-  for (let i = 1; i < xFreq; i++) {
-    result.push(crossLine(lines.top, (i/xFreq), lines.bottom, (i/xFreq)));
+  for (let i = 1; i < l1l3Freq; i++) {
+    result.push(crossLine(quad.l1, (i/l1l3Freq), quad.l3, (i/l2l4Freq)));
   }
-
-  for (let i = 1; i < yFreq; i++) {
-    result.push(crossLine(lines.left,(i/yFreq), lines.right,(i/yFreq)));
+  for (let i = 1; i < l2l4Freq; i++) {
+    result.push(crossLine(quad.l2,(i/l2l4Freq),quad.l4,(i/l2l4Freq)));
   }
-
   return result
 }
 
 const r = 0.5
-const outerBox = new Rectangle(0, 0, cw, ch)
-const innerBox = new Rectangle(cw*(1-r)-50, ch*(1-r)-50, cw*r, ch*r)
+const outerBox = new Rect(0, 0, cw, ch)
+const innerBox = new Rect(cw*(1-r)-50, ch*(1-r)-50, cw*r, ch*r)
 
 outerBox.draw()
 innerBox.draw()
@@ -92,7 +114,14 @@ dirs.forEach(dir => {
   }
 });
 
-generateGrid(innerBox,10, 10).forEach(l => l.draw())
+generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
+// const quadedInnerBox = new Quad(
+//   innerBox.lines.left,
+//   innerBox.lines.top,
+//   innerBox.lines.right,
+//   innerBox.lines.bottom
+// );
+// generateQuadGrid(quadedInnerBox,10, 10).forEach(l => l.draw())
 
 ctx.stroke();
 
