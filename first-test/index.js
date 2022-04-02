@@ -34,6 +34,28 @@ class Line {
   }
 }
 
+class Rectangle {
+  constructor(x,y,w,h) {
+    this.leftTop = new Point(x,y)
+    this.rightTop = new Point(x+w,y)
+    this.leftBottom = new Point(x,y+h)
+    this.rightBottom = new Point(x+w,y+h)
+  }
+
+  lines() {
+    return {
+      top: new Line(this.leftTop,this.rightTop),
+      bottom: new Line(this.leftBottom,this.rightBottom),
+      right: new Line(this.rightTop,this.rightBottom),
+      left: new Line(this.leftTop,this.leftBottom)
+    }
+  }
+
+  draw() {
+    Object.keys(this.lines()).forEach(l => l.draw())
+  }
+}
+
 function crossLine(l1,r1,l2,r2) {
   const pointOnL1 = l1.interpolate(r1)
   const pointOnL2 = l2.interpolate(r2)
@@ -41,24 +63,16 @@ function crossLine(l1,r1,l2,r2) {
 }
 
 function generateGrid(x,y,w,h,xFreq,yFreq) {
-  const leftTopPoint = new Point(x,y)
-  const rightTopPoint = new Point(x+w,y)
-  const leftBottomPoint = new Point(x,y+h)
-  const rightBottomPoint = new Point(x+w,y+h)
-
-  const topLine = new Line(leftTopPoint,rightTopPoint)
-  const bottomLine = new Line(leftBottomPoint,rightBottomPoint)
-  const rightLine = new Line(rightTopPoint,rightBottomPoint)
-  const leftLine = new Line(leftTopPoint,leftBottomPoint)
-
+  const rect = new Rectangle(x,y,w,h)
+  const lines = rect.lines()
 
   let result = []
   for (let i = 1; i < xFreq; i++) {
-    result.push (crossLine(topLine,(i/xFreq),bottomLine,(i/xFreq)))
+    result.push(crossLine(lines.top, (i/xFreq), lines.bottom, (i/xFreq)));
   }
 
   for (let i = 1; i < yFreq; i++) {
-    result.push (crossLine(leftLine,(i/yFreq),rightLine,(i/yFreq)))
+    result.push(crossLine(lines.left,(i/yFreq), lines.right,(i/yFreq)));
   }
 
   return result
@@ -93,9 +107,6 @@ const innerBox = {
 }
 ctx.strokeRect(outerBox.x, outerBox.y, outerBox.w, outerBox.h)
 ctx.strokeRect(innerBox.x, innerBox.y, innerBox.w, innerBox.h)
-
-// ctx.moveTo(outerBox.x, outerBox.y);
-// ctx.lineTo(innerBox.x, innerBox.y);
 
 const freq = 10
 for (let i = 0; i < freq; i++) {
