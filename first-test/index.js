@@ -57,11 +57,11 @@ class Rect {
 }
 
 class Quad {
-  constructor(l1,l2,l3,l4) {
+  constructor(l1,l3) {
     this.l1 = l1
-    this.l2 = l2
+    this.l2 = crossLine(l1,0,l3,0)
     this.l3 = l3
-    this.l4 = l4
+    this.l4 = crossLine(l1,1,l3,1)
   }
 
   draw() {
@@ -81,9 +81,7 @@ function crossLine(l1,r1,l2,r2) {
 function generateRectGrid(rect,xFreq,yFreq) {
   const quadedRect = new Quad(
     rect.lines.left,
-    rect.lines.top,
     rect.lines.right,
-    rect.lines.bottom
   );
   return generateQuadGrid(quadedRect,xFreq,yFreq)
 }
@@ -108,20 +106,17 @@ innerBox.draw()
 
 const freq = 10
 dirs = ['top', 'right', 'bottom', 'left']
-dirs.forEach(dir => {
-  for (let i = 1; i < freq; i++) {
-    crossLine(outerBox.lines[dir],(i/freq),innerBox.lines[dir],(i/freq)).draw()
-  }
-});
+walls = dirs.map(dir => {
+  const higherLine = outerBox.lines[dir]
+  const lowerLine = innerBox.lines[dir]
+  return new Quad(higherLine,lowerLine)
+})
+walls.forEach(wall => {
+  wall.draw()
+  generateQuadGrid(wall,freq,freq).forEach(l => l.draw())
+})
 
 generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
-// const quadedInnerBox = new Quad(
-//   innerBox.lines.left,
-//   innerBox.lines.top,
-//   innerBox.lines.right,
-//   innerBox.lines.bottom
-// );
-// generateQuadGrid(quadedInnerBox,10, 10).forEach(l => l.draw())
 
 ctx.stroke();
 
