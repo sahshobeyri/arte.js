@@ -74,11 +74,12 @@ class Rect {
 }
 
 class Quad {
-  constructor(l1,l3) {
+  constructor(l1,l3,fillColor = null) {
     this.l1 = l1
     this.l2 = crossLine(l1,0,l3,0)
     this.l3 = l3
     this.l4 = crossLine(l1,1,l3,1)
+    this.fillColor = fillColor
   }
 
   get points() {
@@ -89,15 +90,15 @@ class Quad {
       p4: this.l3.from
     }
   }
-  draw(fillColor = null) {
-    if (fillColor) {
+  draw() {
+    if (this.fillColor) {
       ctx.beginPath();
       ctx.moveTo(this.points.p1.x,this.points.p1.y)
       ctx.lineTo(this.points.p2.x,this.points.p2.y)
       ctx.lineTo(this.points.p3.x,this.points.p3.y)
       ctx.lineTo(this.points.p4.x,this.points.p4.y)
       ctx.closePath()
-      ctx.fillStyle = fillColor;
+      ctx.fillStyle = this.fillColor;
       ctx.fill();
     }else {
       this.l1.draw()
@@ -123,14 +124,26 @@ function generateRectGrid(rect,xFreq,yFreq) {
 }
 
 function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
-  let result = []
-  for (let i = 1; i < l1l3Freq; i++) {
-    result.push(crossLine(quad.l1, (i/l1l3Freq), quad.l3, (i/l2l4Freq)));
+  let lines = []
+  let colorQuads = []
+
+  let prevLine = null
+  for (let i = 0; i < l1l3Freq; i++) {
+    const newLine = crossLine(quad.l1, (i/l1l3Freq), quad.l3, (i/l1l3Freq))
+    lines.push(newLine);
+    if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
+    prevLine = newLine
   }
-  for (let i = 1; i < l2l4Freq; i++) {
-    result.push(crossLine(quad.l2,(i/l2l4Freq),quad.l4,(i/l2l4Freq)));
+
+  prevLine = null
+  for (let i = 0; i < l2l4Freq; i++) {
+    const newLine = crossLine(quad.l2, (i/l2l4Freq), quad.l4, (i/l2l4Freq))
+    lines.push(newLine);
+    if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
+    prevLine = newLine
   }
-  return result
+
+  return [...colorQuads,...lines]
 }
 
 let xOffset = 0
