@@ -7,13 +7,13 @@ function cls() {
   ctx.clearRect(0, 0, cw, ch);
 }
 
-// function getMousePos(canvas, evt) {
-//   let rect = canvas.getBoundingClientRect();
-//   return {
-//     x: evt.clientX - rect.left,
-//     y: evt.clientY - rect.top
-//   };
-// }
+function getMousePos(canvas, evt) {
+  let rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
 
 class Point {
   constructor(x,y) {
@@ -107,18 +107,12 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
 
 let xOffset = 0
 let yOffset = 0
-let moveSpeed = 4
-document.addEventListener('keydown', e =>{
-  if (e.key === 'd') {
-    xOffset -= moveSpeed
-  }else if (e.key === 'a') {
-    xOffset += moveSpeed
-  }else if (e.key === 's') {
-    yOffset -= moveSpeed
-  }else if (e.key === 'w') {
-    yOffset += moveSpeed
-  }
-});
+
+document.addEventListener('mousemove', evt => {
+  xOffset = cw - getMousePos(c,evt).x
+  yOffset = ch - getMousePos(c,evt).y
+})
+
 setInterval(() => {
   c.width = c.width
 
@@ -144,7 +138,7 @@ setInterval(() => {
   generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
 
   ctx.stroke();
-},5)
+},10)
 
 
 // ctx.moveTo(0, 0);
