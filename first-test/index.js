@@ -37,8 +37,10 @@ class Line {
   }
 
   draw() {
+    ctx.beginPath()
     ctx.moveTo(this.from.x,this.from.y)
     ctx.lineTo(this.to.x,this.to.y)
+    ctx.stroke()
   }
 }
 
@@ -132,12 +134,10 @@ setInterval(() => {
   })
   walls.forEach(wall => {
     wall.draw()
-    generateQuadGrid(wall,freq,freq).forEach(l => l.draw())
+    generateQuadGrid(wall,freq,freq).forEach(i => i.draw())
   })
 
   generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
-
-  ctx.stroke();
 },10)
 
 
