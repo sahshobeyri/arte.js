@@ -27,11 +27,11 @@ class Line {
     const interpolatedY = this.from.y + (deltaY * r)
     return new Point(interpolatedX,interpolatedY)
   }
-}
 
-function drawLine(l) {
-  ctx.moveTo(l.from.x,l.from.y)
-  ctx.lineTo(l.to.x,l.to.y)
+  draw() {
+    ctx.moveTo(this.from.x,this.from.y)
+    ctx.lineTo(this.to.x,this.to.y)
+  }
 }
 
 function crossLine(l1,r1,l2,r2) {
@@ -111,7 +111,7 @@ for (let i = 0; i < freq; i++) {
 generateGrid(
   innerBox.x, innerBox.y,
   innerBox.w, innerBox.h,
-  10, 10).forEach(drawLine)
+  10, 10).forEach(l => l.draw())
 
 ctx.stroke();
 
