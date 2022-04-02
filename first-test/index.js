@@ -15,8 +15,20 @@ function getMousePos(canvas, evt) {
   };
 }
 
-class Point {
-  constructor(x,y) {
+class Drawable {
+  constructor(drawOrder = 0) {
+    this.drawOrder = drawOrder
+  }
+  
+  static drawInOrder(drawablesArr) {
+    const compFunc = (a,b) => a.drawOrder - b.drawOrder
+    drawablesArr.sort(compFunc).forEach(d => d.draw())
+  }
+}
+
+class Point extends Drawable{
+  constructor(x,y,drawOrder = 0) {
+    super(drawOrder)
     this.x = x
     this.y = y
   }
@@ -29,8 +41,9 @@ class Point {
   }
 }
 
-class Line {
-  constructor(from, to) {
+class Line extends Drawable{
+  constructor(from, to,drawOrder = 0) {
+    super(drawOrder)
     this.from = from
     this.to = to
   }
@@ -51,8 +64,9 @@ class Line {
   }
 }
 
-class Rect {
-  constructor(x,y,w,h) {
+class Rect extends Drawable {
+  constructor(x,y,w,h,drawOrder = 0) {
+    super(drawOrder)
     this.leftTop = new Point(x,y)
     this.rightTop = new Point(x+w,y)
     this.leftBottom = new Point(x,y+h)
@@ -73,8 +87,9 @@ class Rect {
   }
 }
 
-class Quad {
-  constructor(l1,l3,fillColor = null) {
+class Quad extends Drawable {
+  constructor(l1,l3,fillColor = null,drawOrder = 0) {
+    super(drawOrder)
     this.l1 = l1
     this.l2 = crossLine(l1,0,l3,0)
     this.l3 = l3
@@ -128,7 +143,7 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
   let colorQuads = []
 
   let prevLine = null
-  for (let i = 0; i < l1l3Freq; i++) {
+  for (let i = 0; i <= l1l3Freq; i++) {
     const newLine = crossLine(quad.l1, (i/l1l3Freq), quad.l3, (i/l1l3Freq))
     lines.push(newLine);
     if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
@@ -136,13 +151,14 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
   }
 
   prevLine = null
-  for (let i = 0; i < l2l4Freq; i++) {
+  for (let i = 0; i <= l2l4Freq; i++) {
     const newLine = crossLine(quad.l2, (i/l2l4Freq), quad.l4, (i/l2l4Freq))
     lines.push(newLine);
     if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
     prevLine = newLine
   }
 
+  colorQuads.forEach(q => q.drawOrder = -1)
   return [...colorQuads,...lines]
 }
 
@@ -161,8 +177,8 @@ setInterval(() => {
   const outerBox = new Rect(0, 0, cw, ch)
   const innerBox = new Rect(cw*(1-r)-xOffset, ch*(1-r)-yOffset, cw*r, ch*r)
 
-  outerBox.draw()
-  innerBox.draw()
+  // outerBox.draw()
+  // innerBox.draw()
 
   const freq = 10
   const dirs = ['top', 'right', 'bottom', 'left']
@@ -171,12 +187,10 @@ setInterval(() => {
     const lowerLine = innerBox.lines[dir]
     return new Quad(higherLine,lowerLine)
   })
-  walls.forEach(wall => {
-    wall.draw()
-    generateQuadGrid(wall,freq,freq).forEach(i => i.draw())
-  })
-
-  generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
+  const wallsGrid = walls.map(wall => generateQuadGrid(wall,freq,freq)).flat(1)
+  const floorGrid = generateRectGrid(innerBox,freq, freq)
+  const allDrawables = [...wallsGrid,...floorGrid]
+  Drawable.drawInOrder(allDrawables)
 },10)
 
 
