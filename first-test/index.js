@@ -77,20 +77,6 @@ function generateGrid(rect,xFreq,yFreq) {
   return result
 }
 
-function drawGrid(x,y,w,h,xFreq,yFreq) {
-  const xStep = w/xFreq
-  for (let i = 0; i < xFreq; i++) {
-    ctx.moveTo(x+(i*xStep),y)
-    ctx.lineTo(x+(i*xStep),y+h)
-  }
-
-  const yStep = h/yFreq
-  for (let i = 0; i < yFreq; i++) {
-    ctx.moveTo(x,y+(i*yStep))
-    ctx.lineTo(x+w,y+(i*yStep))
-  }
-}
-
 const r = 0.5
 const outerBox = new Rectangle(0, 0, cw, ch)
 const innerBox = new Rectangle(cw*(1-r), ch*(1-r), cw*r, ch*r)
@@ -106,7 +92,6 @@ for (let i = 0; i < freq; i++) {
   crossLine(outerBox.lines.left,(i/freq),innerBox.lines.left,(i/freq)).draw()
 }
 
-// drawGrid(innerBox.x,innerBox.y,innerBox.w,innerBox.h,10,10)
 generateGrid(innerBox,10, 10).forEach(l => l.draw())
 
 ctx.stroke();
