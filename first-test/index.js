@@ -7,6 +7,14 @@ function cls() {
   ctx.clearRect(0, 0, cw, ch);
 }
 
+// function getMousePos(canvas, evt) {
+//   let rect = canvas.getBoundingClientRect();
+//   return {
+//     x: evt.clientX - rect.left,
+//     y: evt.clientY - rect.top
+//   };
+// }
+
 class Point {
   constructor(x,y) {
     this.x = x
@@ -97,28 +105,46 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
   return result
 }
 
-const r = 0.5
-const outerBox = new Rect(0, 0, cw, ch)
-const innerBox = new Rect(cw*(1-r)-50, ch*(1-r)-50, cw*r, ch*r)
+let xOffset = 0
+let yOffset = 0
+let moveSpeed = 4
+document.addEventListener('keydown', e =>{
+  if (e.key === 'd') {
+    xOffset -= moveSpeed
+  }else if (e.key === 'a') {
+    xOffset += moveSpeed
+  }else if (e.key === 's') {
+    yOffset -= moveSpeed
+  }else if (e.key === 'w') {
+    yOffset += moveSpeed
+  }
+});
+setInterval(() => {
+  c.width = c.width
 
-outerBox.draw()
-innerBox.draw()
+  const r = 0.5
+  const outerBox = new Rect(0, 0, cw, ch)
+  const innerBox = new Rect(cw*(1-r)-xOffset, ch*(1-r)-yOffset, cw*r, ch*r)
 
-const freq = 10
-dirs = ['top', 'right', 'bottom', 'left']
-walls = dirs.map(dir => {
-  const higherLine = outerBox.lines[dir]
-  const lowerLine = innerBox.lines[dir]
-  return new Quad(higherLine,lowerLine)
-})
-walls.forEach(wall => {
-  wall.draw()
-  generateQuadGrid(wall,freq,freq).forEach(l => l.draw())
-})
+  outerBox.draw()
+  innerBox.draw()
 
-generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
+  const freq = 10
+  const dirs = ['top', 'right', 'bottom', 'left']
+  const walls = dirs.map(dir => {
+    const higherLine = outerBox.lines[dir]
+    const lowerLine = innerBox.lines[dir]
+    return new Quad(higherLine,lowerLine)
+  })
+  walls.forEach(wall => {
+    wall.draw()
+    generateQuadGrid(wall,freq,freq).forEach(l => l.draw())
+  })
 
-ctx.stroke();
+  generateRectGrid(innerBox,10, 10).forEach(l => l.draw())
+
+  ctx.stroke();
+},5)
 
 
 // ctx.moveTo(0, 0);
