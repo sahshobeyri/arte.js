@@ -7,6 +7,53 @@ function cls() {
   ctx.clearRect(0, 0, cw, ch);
 }
 
+class Point {
+  constructor(x,y) {
+    this.x = x
+    this.y = y
+  }
+}
+
+class Line {
+  constructor(from, to) {
+    this.from = from
+    this.to = to
+  }
+
+  interpolate(r) {
+    const deltaX = this.to.x - this.from.x
+    const deltaY = this.to.y - this.from.y
+    const interpolatedX = this.from.x + (deltaX * r)
+    const interpolatedY = this.from.y + (deltaY * r)
+    return new Point(interpolatedX,interpolatedY)
+  }
+}
+
+function drawLine(l) {
+  ctx.moveTo(l.from.x,l.from.y)
+  ctx.lineTo(l.to.x,l.to.y)
+}
+
+function generateGrid(x,y,w,h,xFreq,yFreq) {
+  let result = []
+
+  const xStep = w/xFreq
+  for (let i = 0; i < xFreq; i++) {
+    const from = new Point(x+(i*xStep),y)
+    const to = new Point(x+(i*xStep),y+h)
+    result.push (new Line(from,to))
+  }
+
+  const yStep = h/yFreq
+  for (let i = 0; i < yFreq; i++) {
+    const from = new Point(x,y+(i*yStep))
+    const to = new Point(x+w,y+(i*yStep))
+    result.push (new Line(from,to))
+  }
+
+  return result
+}
+
 function drawGrid(x,y,w,h,xFreq,yFreq) {
   const xStep = w/xFreq
   for (let i = 0; i < xFreq; i++) {
@@ -50,7 +97,11 @@ for (let i = 0; i < freq; i++) {
   ctx.lineTo(innerBox.x,innerBox.y + innerBox.h* (i/freq));
 }
 
-drawGrid(innerBox.x,innerBox.y,innerBox.w,innerBox.h,10,10)
+// drawGrid(innerBox.x,innerBox.y,innerBox.w,innerBox.h,10,10)
+generateGrid(
+  innerBox.x, innerBox.y,
+  innerBox.w, innerBox.h,
+  10, 10).forEach(drawLine)
 
 ctx.stroke();
 
