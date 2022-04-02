@@ -42,7 +42,7 @@ class Rectangle {
     this.rightBottom = new Point(x+w,y+h)
   }
 
-  lines() {
+  get lines() {
     return {
       top: new Line(this.leftTop,this.rightTop),
       bottom: new Line(this.leftBottom,this.rightBottom),
@@ -52,7 +52,7 @@ class Rectangle {
   }
 
   draw() {
-    Object.keys(this.lines()).forEach(l => l.draw())
+    Object.values(this.lines).forEach(l => l.draw())
   }
 }
 
@@ -62,9 +62,8 @@ function crossLine(l1,r1,l2,r2) {
   return new Line(pointOnL1,pointOnL2)
 }
 
-function generateGrid(x,y,w,h,xFreq,yFreq) {
-  const rect = new Rectangle(x,y,w,h)
-  const lines = rect.lines()
+function generateGrid(rect,xFreq,yFreq) {
+  const lines = rect.lines
 
   let result = []
   for (let i = 1; i < xFreq; i++) {
@@ -93,36 +92,22 @@ function drawGrid(x,y,w,h,xFreq,yFreq) {
 }
 
 const r = 0.5
-const outerBox = {
-  x:0,
-  y:0,
-  w:cw,
-  h:ch
-}
-const innerBox = {
-  x:cw*(1-r),
-  y:ch*(1-r),
-  w:cw*r,
-  h:ch*r
-}
-ctx.strokeRect(outerBox.x, outerBox.y, outerBox.w, outerBox.h)
-ctx.strokeRect(innerBox.x, innerBox.y, innerBox.w, innerBox.h)
+const outerBox = new Rectangle(0, 0, cw, ch)
+const innerBox = new Rectangle(cw*(1-r), ch*(1-r), cw*r, ch*r)
+
+outerBox.draw()
+innerBox.draw()
 
 const freq = 10
 for (let i = 0; i < freq; i++) {
-  ctx.moveTo(outerBox.x + outerBox.w* (i/freq), outerBox.y);
-  ctx.lineTo(innerBox.x + innerBox.w* (i/freq), innerBox.y);
+  crossLine(outerBox.lines.top,(i/freq),innerBox.lines.top,(i/freq)).draw()
 }
 for (let i = 0; i < freq; i++) {
-  ctx.moveTo(outerBox.x,outerBox.y + outerBox.h* (i/freq));
-  ctx.lineTo(innerBox.x,innerBox.y + innerBox.h* (i/freq));
+  crossLine(outerBox.lines.left,(i/freq),innerBox.lines.left,(i/freq)).draw()
 }
 
 // drawGrid(innerBox.x,innerBox.y,innerBox.w,innerBox.h,10,10)
-generateGrid(
-  innerBox.x, innerBox.y,
-  innerBox.w, innerBox.h,
-  10, 10).forEach(l => l.draw())
+generateGrid(innerBox,10, 10).forEach(l => l.draw())
 
 ctx.stroke();
 
