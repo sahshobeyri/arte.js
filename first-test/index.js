@@ -79,18 +79,18 @@ function generateGrid(rect,xFreq,yFreq) {
 
 const r = 0.5
 const outerBox = new Rectangle(0, 0, cw, ch)
-const innerBox = new Rectangle(cw*(1-r), ch*(1-r), cw*r, ch*r)
+const innerBox = new Rectangle(cw*(1-r)-50, ch*(1-r)-50, cw*r, ch*r)
 
 outerBox.draw()
 innerBox.draw()
 
 const freq = 10
-for (let i = 0; i < freq; i++) {
-  crossLine(outerBox.lines.top,(i/freq),innerBox.lines.top,(i/freq)).draw()
-}
-for (let i = 0; i < freq; i++) {
-  crossLine(outerBox.lines.left,(i/freq),innerBox.lines.left,(i/freq)).draw()
-}
+dirs = ['top', 'right', 'bottom', 'left']
+dirs.forEach(dir => {
+  for (let i = 1; i < freq; i++) {
+    crossLine(outerBox.lines[dir],(i/freq),innerBox.lines[dir],(i/freq)).draw()
+  }
+});
 
 generateGrid(innerBox,10, 10).forEach(l => l.draw())
 
