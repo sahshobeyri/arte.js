@@ -20,6 +20,13 @@ class Point {
     this.x = x
     this.y = y
   }
+
+  draw(color = '#000000') {
+    ctx.beginPath()
+    ctx.arc(this.x, this.y, 10, 0, 2* Math.PI);
+    ctx.strokeStyle = color
+    ctx.stroke()
+  }
 }
 
 class Line {
@@ -74,11 +81,30 @@ class Quad {
     this.l4 = crossLine(l1,1,l3,1)
   }
 
-  draw() {
-    this.l1.draw()
-    this.l2.draw()
-    this.l3.draw()
-    this.l4.draw()
+  get points() {
+    return {
+      p1: this.l1.from,
+      p2: this.l1.to,
+      p3: this.l3.to,
+      p4: this.l3.from
+    }
+  }
+  draw(fillColor = null) {
+    if (fillColor) {
+      ctx.beginPath();
+      ctx.moveTo(this.points.p1.x,this.points.p1.y)
+      ctx.lineTo(this.points.p2.x,this.points.p2.y)
+      ctx.lineTo(this.points.p3.x,this.points.p3.y)
+      ctx.lineTo(this.points.p4.x,this.points.p4.y)
+      ctx.closePath()
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+    }else {
+      this.l1.draw()
+      this.l2.draw()
+      this.l3.draw()
+      this.l4.draw()
+    }
   }
 }
 
