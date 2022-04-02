@@ -34,21 +34,31 @@ function drawLine(l) {
   ctx.lineTo(l.to.x,l.to.y)
 }
 
-function generateGrid(x,y,w,h,xFreq,yFreq) {
-  let result = []
+function crossLine(l1,r1,l2,r2) {
+  const pointOnL1 = l1.interpolate(r1)
+  const pointOnL2 = l2.interpolate(r2)
+  return new Line(pointOnL1,pointOnL2)
+}
 
-  const xStep = w/xFreq
-  for (let i = 0; i < xFreq; i++) {
-    const from = new Point(x+(i*xStep),y)
-    const to = new Point(x+(i*xStep),y+h)
-    result.push (new Line(from,to))
+function generateGrid(x,y,w,h,xFreq,yFreq) {
+  const leftTopPoint = new Point(x,y)
+  const rightTopPoint = new Point(x+w,y)
+  const leftBottomPoint = new Point(x,y+h)
+  const rightBottomPoint = new Point(x+w,y+h)
+
+  const topLine = new Line(leftTopPoint,rightTopPoint)
+  const bottomLine = new Line(leftBottomPoint,rightBottomPoint)
+  const rightLine = new Line(rightTopPoint,rightBottomPoint)
+  const leftLine = new Line(leftTopPoint,leftBottomPoint)
+
+
+  let result = []
+  for (let i = 1; i < xFreq; i++) {
+    result.push (crossLine(topLine,(i/xFreq),bottomLine,(i/xFreq)))
   }
 
-  const yStep = h/yFreq
-  for (let i = 0; i < yFreq; i++) {
-    const from = new Point(x,y+(i*yStep))
-    const to = new Point(x+w,y+(i*yStep))
-    result.push (new Line(from,to))
+  for (let i = 1; i < yFreq; i++) {
+    result.push (crossLine(leftLine,(i/yFreq),rightLine,(i/yFreq)))
   }
 
   return result
