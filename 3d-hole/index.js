@@ -5,7 +5,7 @@ const cw = c.width
 const ch = c.height
 
 function cls() {
-  c.width = c.width
+  c.width = cw
   // ctx.clearRect(0, 0, cw, ch);
 }
 
@@ -21,7 +21,7 @@ class Drawable {
   constructor(drawOrder = 0) {
     this.drawOrder = drawOrder
   }
-  
+
   static drawInOrder(drawablesArr) {
     const compFunc = (a,b) => a.drawOrder - b.drawOrder
     drawablesArr.sort(compFunc).forEach(d => d.draw())
