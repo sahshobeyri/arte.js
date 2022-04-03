@@ -142,11 +142,18 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
   let lines = []
   let colorQuads = []
 
+  // let color = new Color("p3", [0, 0, 0]);
+  // let gray = color.range("white", {
+  //   space: "lch", // interpolation space
+  //   outputSpace: "srgb"
+  // });
+
   let prevLine = null
   for (let i = 0; i <= l1l3Freq; i++) {
-    const newLine = crossLine(quad.l1, (i/l1l3Freq), quad.l3, (i/l1l3Freq))
+    const frac = i/l1l3Freq
+    const newLine = crossLine(quad.l1, frac, quad.l3, frac)
     lines.push(newLine);
-    if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
+    if (prevLine) colorQuads.push(new Quad(prevLine,newLine))
     prevLine = newLine
   }
 
