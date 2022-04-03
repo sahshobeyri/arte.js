@@ -144,7 +144,7 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq,shading = false) {
   let lines = []
   let colorQuads = []
 
-  const grayScale = getScale('white','#282828')
+  const grayScale = getScale('white','#151515')
 
   let prevLine = null
   for (let i = 0; i <= l1l3Freq; i++) {
@@ -192,7 +192,7 @@ setInterval(() => {
   // outerBox.draw()
   // innerBox.draw()
 
-  const freq = 10
+  const freq = 20
   const dirs = ['top', 'right', 'bottom', 'left']
   const walls = dirs.map(dir => {
     const higherLine = outerBox.lines[dir]
