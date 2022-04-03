@@ -1,10 +1,12 @@
+import { getScale } from 'https://cdn.skypack.dev/color2k?min';
 const c = document.getElementById("myCanvas");
 const ctx = c.getContext("2d");
 const cw = c.width
 const ch = c.height
 
 function cls() {
-  ctx.clearRect(0, 0, cw, ch);
+  c.width = c.width
+  // ctx.clearRect(0, 0, cw, ch);
 }
 
 function getMousePos(canvas, evt) {
@@ -130,23 +132,19 @@ function crossLine(l1,r1,l2,r2) {
   return new Line(pointOnL1,pointOnL2)
 }
 
-function generateRectGrid(rect,xFreq,yFreq) {
+function generateRectGrid(rect,xFreq,yFreq,shading = false) {
   const quadedRect = new Quad(
     rect.lines.left,
     rect.lines.right,
   );
-  return generateQuadGrid(quadedRect,xFreq,yFreq)
+  return generateQuadGrid(quadedRect,xFreq,yFreq,shading)
 }
 
-function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
+function generateQuadGrid(quad,l1l3Freq,l2l4Freq,shading = false) {
   let lines = []
   let colorQuads = []
 
-  // let color = new Color("p3", [0, 0, 0]);
-  // let gray = color.range("white", {
-  //   space: "lch", // interpolation space
-  //   outputSpace: "srgb"
-  // });
+  const grayScale = getScale('white','#282828')
 
   let prevLine = null
   for (let i = 0; i <= l1l3Freq; i++) {
@@ -159,9 +157,16 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq) {
 
   prevLine = null
   for (let i = 0; i <= l2l4Freq; i++) {
-    const newLine = crossLine(quad.l2, (i/l2l4Freq), quad.l4, (i/l2l4Freq))
+    const frac = i/l1l3Freq
+    const newLine = crossLine(quad.l2, frac, quad.l4, frac)
     lines.push(newLine);
-    if (prevLine) colorQuads.push(new Quad(prevLine,newLine,'#aaaaaa'))
+    if (prevLine) {
+      if (shading) {
+        colorQuads.push(new Quad(prevLine,newLine,grayScale(frac)))
+      }else {
+        colorQuads.push(new Quad(prevLine,newLine,grayScale(1)))
+      }
+    }
     prevLine = newLine
   }
 
@@ -178,7 +183,7 @@ document.addEventListener('mousemove', evt => {
 })
 
 setInterval(() => {
-  c.width = c.width
+  cls()
 
   const r = 0.5
   const outerBox = new Rect(0, 0, cw, ch)
@@ -194,7 +199,7 @@ setInterval(() => {
     const lowerLine = innerBox.lines[dir]
     return new Quad(higherLine,lowerLine)
   })
-  const wallsGrid = walls.map(wall => generateQuadGrid(wall,freq,freq)).flat(1)
+  const wallsGrid = walls.map(wall => generateQuadGrid(wall,freq,freq,true)).flat(1)
   const floorGrid = generateRectGrid(innerBox,freq, freq)
   const allDrawables = [...wallsGrid,...floorGrid]
   Drawable.drawInOrder(allDrawables)
