@@ -204,26 +204,3 @@ setInterval(() => {
   const allDrawables = [...wallsGrid,...floorGrid]
   Drawable.drawInOrder(allDrawables)
 },10)
-
-
-// ctx.moveTo(0, 0);
-// ctx.lineTo(300, 300);
-// ctx.stroke();
-
-// for (let i = 0; i <100; i++) {
-//   ctx.beginPath();
-//   ctx.arc(i, i, i*1.5, 0, Math.PI * (i/100));
-//   ctx.stroke();
-// }
-
-// let j = 0
-// setInterval(()=> {
-//   cls()
-//   for (let i = 0; i <100; i++) {
-//     ctx.beginPath();
-//     ctx.arc(i, i, j, 0, Math.PI);
-//     ctx.stroke();
-//   }
-//   j+=0.01
-// },10)
-
