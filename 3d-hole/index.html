@@ -1,25 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>3D-Hole</title>
+  <meta charset="UTF-8">
+  <title>3D-Hole</title>
+  <style>
+    .container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .info-box {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .title{
+      text-align: center;
+    }
+
+    .settings-box {
+      border: black 2px solid;
+      border-radius: 0.5rem;
+      padding-bottom: 1rem;
+      width: 15rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .settings-bar {
+      width: 80%;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    .settings-bar__button {
+      width: 1.5rem;
+      height: 1.5rem;
+      background-color: white;
+      border: solid black 1px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .settings-bar__button--green {
+      background-color: lawngreen;
+    }
+    .settings-bar__button--red {
+      background-color: #fa4141;
+    }
+
+    #myCanvas{
+      width: 75%;
+      height: auto;
+      max-width: 500px;
+      max-height: 500px;
+      border: black solid 1px;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="myCanvas"
-            width="500"
-            height="500"
-            style="border: 1px solid black"
-    ></canvas>
-    <div>
-        <button id="depthPlus">+</button>
+<div class="container">
+  <canvas id="myCanvas"
+          width="500"
+          height="500"
+  ></canvas>
+  <div class="info-box">
+    <div class="title">
+      <h1>--« The 3D Hole »--</h1>
+    </div>
+    <div class="settings-box">
+      <h3>Settings</h3>
+      <div class="settings-bar">
+        <button id="depthMinus" class="settings-bar__button settings-bar__button--red">
+          ▼
+        </button>
         <span>Depth</span>
-        <button id="depthMinus">-</button>
-    </div>
-    <div>
-        <button id="freqPlus">+</button>
+        <button id="depthPlus" class="settings-bar__button settings-bar__button--green">
+          ▲
+        </button>
+      </div>
+      <div class="settings-bar">
+        <button id="freqMinus" class="settings-bar__button settings-bar__button--red">
+          ▼
+        </button>
         <span>Tiling Frequency</span>
-        <button id="freqMinus">-</button>
+        <button id="freqPlus" class="settings-bar__button settings-bar__button--green">
+          ▲
+        </button>
+      </div>
     </div>
+  </div>
+</div>
 </body>
 <script src="index.js" type="module"></script>
 </html>
