@@ -182,15 +182,12 @@ document.addEventListener('mousemove', evt => {
   yOffset = ch - getMousePos(c,evt).y
 })
 
-setInterval(() => {
+function mainDrawFunction() {
   cls()
 
   const r = 0.5
   const outerBox = new Rect(0, 0, cw, ch)
   const innerBox = new Rect(cw*(1-r)-xOffset, ch*(1-r)-yOffset, cw*r, ch*r)
-
-  // outerBox.draw()
-  // innerBox.draw()
 
   const freq = 20
   const dirs = ['top', 'right', 'bottom', 'left']
@@ -203,4 +200,8 @@ setInterval(() => {
   const floorGrid = generateRectGrid(innerBox,freq, freq)
   const allDrawables = [...wallsGrid,...floorGrid]
   Drawable.drawInOrder(allDrawables)
-},10)
+
+  requestAnimationFrame(mainDrawFunction)
+}
+
+requestAnimationFrame(mainDrawFunction)
