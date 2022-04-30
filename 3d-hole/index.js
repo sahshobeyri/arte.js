@@ -178,14 +178,28 @@ let xOffset = 0
 let yOffset = 0
 
 let r = 0.5
+let freq = 20
 
 document.addEventListener('mousemove', evt => {
   xOffset = cw - getMousePos(c,evt).x
   yOffset = ch - getMousePos(c,evt).y
 })
 
-document.getElementById("depthPlus").addEventListener('click', () => r *= 0.9)
-document.getElementById("depthMinus").addEventListener('click', () => r *= 1.1)
+document.getElementById("depthPlus").addEventListener('click', () => {
+  r *= 0.9
+  r = Math.max(r,0.01)
+})
+document.getElementById("depthMinus").addEventListener('click', () => {
+  r *= 1.1
+  r = Math.min(r,0.9)
+})
+
+document.getElementById("freqPlus").addEventListener('click', () => {
+  freq++
+})
+document.getElementById("freqMinus").addEventListener('click', () => {
+  if (freq > 1) freq--
+})
 
 function mainDrawFunction() {
   cls()
@@ -193,7 +207,6 @@ function mainDrawFunction() {
   const outerBox = new Rect(0, 0, cw, ch)
   const innerBox = new Rect(cw*(1-r)-xOffset, ch*(1-r)-yOffset, cw*r, ch*r)
 
-  const freq = 20
   const dirs = ['top', 'right', 'bottom', 'left']
   const walls = dirs.map(dir => {
     const higherLine = outerBox.lines[dir]
