@@ -177,15 +177,19 @@ function generateQuadGrid(quad,l1l3Freq,l2l4Freq,shading = false) {
 let xOffset = 0
 let yOffset = 0
 
+let r = 0.5
+
 document.addEventListener('mousemove', evt => {
   xOffset = cw - getMousePos(c,evt).x
   yOffset = ch - getMousePos(c,evt).y
 })
 
+document.getElementById("depthPlus").addEventListener('click', () => r *= 0.9)
+document.getElementById("depthMinus").addEventListener('click', () => r *= 1.1)
+
 function mainDrawFunction() {
   cls()
 
-  const r = 0.5
   const outerBox = new Rect(0, 0, cw, ch)
   const innerBox = new Rect(cw*(1-r)-xOffset, ch*(1-r)-yOffset, cw*r, ch*r)
 
